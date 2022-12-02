@@ -1,0 +1,40 @@
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+  build-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.0
+
+    - name: Cache Bitcoin Core
+      id: cache
+      uses: actions/cache@v3
+      with:
+        path: bitcoin-23.0/bin
+        key: bitcoin-23.0
+
+    - name: Download Bitcoin Core
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: |
+        wget https://bitcoincore.org/bin/bitcoin-core-23.0/bitcoin-23.0-x86_64-linux-gnu.tar.gz
+        tar -xvf bitcoin-23.0-x86_64-linux-gnu.tar.gz
+        ls $PWD/bitcoin-23.0/bin
+
+    - name: Install Bitcoin Core
+      run: |
+        sudo ln -s $PWD/bitcoin-23.0/bin/* /usr/local/bin/
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Test
+      run: npm test

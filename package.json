@@ -1,0 +1,21 @@
+{
+  "name": "additive-rbf-batcher",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./lib/replacer.js",
+  "scripts": {
+    "test": "bmocha --reporter spec test/*.js",
+    "test-file": "bmocha --reporter spec",
+    "build": "bpkg --ignore-bindings --node --output ./build/mtx.js ./node_modules/bcoin/lib/primitives/mtx.js && bpkg --ignore-bindings --node --output ./build/amount.js ./node_modules/bcoin/lib/btc/amount.js"
+  },
+  "author": "Matthew Zipkin",
+  "license": "ISC",
+  "dependencies": {
+    "bcurl": "^0.2.0"
+  },
+  "devDependencies": {
+    "bcoin": "github:bcoin-org/bcoin",
+    "bmocha": "^2.1.7",
+    "bpkg": "^0.6.2"
+  }
+}
