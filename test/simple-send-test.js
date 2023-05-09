@@ -11,6 +11,8 @@ const fs = require('fs');
 describe('Simple Sends', function () {
   this.timeout(10000);
 
+  let reorgBlockHash, abandonedBatch;
+
   const services = new Services({
     network: 'regtest',
     username: 'simple-test',
@@ -289,7 +291,8 @@ describe('Simple Sends', function () {
     services.unconf('alice', 0.12345678);
     console.log(res1);
 
-    await services.alice.waitForRPC('gettransaction', [res1.transaction_id]);
+    // Get Alice's first transaction
+    const tx1 = await services.alice.waitForRPC('gettransaction', [res1.transaction_id]);
     await services.check('alice');
     await services.check('bob');
 
@@ -299,12 +302,10 @@ describe('Simple Sends', function () {
     services.unconf('bob', 0.87654321);
     console.log(res2);
 
-    await services.bob.waitForRPC('gettransaction', [res2.transaction_id]);
+    // Save the batch tx that will get abandoned when tx1 confirms
+    abandonedBatch = await services.bob.waitForRPC('gettransaction', [res2.transaction_id]);
     await services.check('alice');
     await services.check('bob');
-
-    // Get Alice's first transaction
-    const tx1 = await services.alice.getTransaction(res1.transaction_id);
 
     // Completely clear mempool by restarting the node with high minRelay fee
     // shut down
@@ -330,7 +331,7 @@ describe('Simple Sends', function () {
     await services.alice.sendRawTransaction(tx1.hex);
 
     // confirm (should confirm Alice's first transaction only)
-    await services.miner.generate(1);
+    reorgBlockHash = (await services.miner.generate(1))[0];
     services.conf('alice', 0.12345678);
     await services.check('alice');
 
@@ -340,6 +341,7 @@ describe('Simple Sends', function () {
     services.unconf('alice', 0.11111111);
     console.log(res3);
 
+    // Save the new batch which pays Bob a second time along with Alice's third order
     await services.alice.waitForRPC('gettransaction', [res3.transaction_id]);
     await services.check('alice');
     await services.check('bob');
@@ -350,6 +352,18 @@ describe('Simple Sends', function () {
     services.conf('bob', 0.87654321);
     await services.check('alice');
     await services.check('bob');
+  });
+
+  it('should reorg 2 blocks without double-paying anyone', async () => {
+    // Rewind 2 blocks, unconfirming the very first single payout to Alice
+    // and the latest batch with Bob's double payment.
+    await services.miner.execute('invalidateblock', [reorgBlockHash]);
+    // Rebroadcasting the abandoned batch nicely RBF's the single Alice payout
+    await services.alice.sendRawTransaction(abandonedBatch.hex);
+    // ... but an extra payout to Bob is in the mempool!
+    await services.miner.generate(1);
+    await services.check('alice');
+    await services.check('bob'); // FAIL!
   });
 
   it('absurd fee limit after 6 RBFs', async () => {
