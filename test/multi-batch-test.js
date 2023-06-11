@@ -78,12 +78,9 @@ describe('Multi Batch', function () {
         const addr1 = await services.alice.getNewAddress();
         const res1 = await services.sendOrder(addr1, payoutCoin);
         services.unconf('alice', payoutCoin);
-        console.log(res1);
         await services.alice.waitForRPC('gettransaction', [res1.transaction_id]);
 
         tx = await services.app.getTransaction(res1.transaction_id);
-        console.log(tx.decoded);
-
         await services.check('alice');
       });
     }
@@ -142,12 +139,9 @@ describe('Multi Batch', function () {
         const addr1 = await services.alice.getNewAddress();
         const res1 = await services.sendOrder(addr1, payoutCoin);
         services.unconf('alice', payoutCoin);
-        console.log(res1);
         await services.alice.waitForRPC('gettransaction', [res1.transaction_id]);
 
-        const tx = await services.app.getTransaction(res1.transaction_id);
-        console.log(tx.decoded);
-
+        await services.app.getTransaction(res1.transaction_id);
         await services.check('alice');
       });
     }

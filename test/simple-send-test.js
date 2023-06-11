@@ -69,7 +69,6 @@ describe('Simple Sends', function () {
     const addr = await services.alice.getNewAddress();
     const res = await services.sendOrder(addr, 1.01010101);
     services.unconf('alice', 1.01010101);
-    console.log(res);
 
     // Wait for broadcast and check
     await services.alice.waitForRPC('gettransaction', [res.transaction_id]);
@@ -86,7 +85,6 @@ describe('Simple Sends', function () {
     const addr = await services.bob.getNewAddress();
     const res = await services.sendOrder(addr, 2.02020202);
     services.unconf('bob', 2.02020202);
-    console.log(res);
 
     // Wait for broadcast and check
     await services.bob.waitForRPC('gettransaction', [res.transaction_id]);
@@ -103,7 +101,6 @@ describe('Simple Sends', function () {
     const aliceAddr = await services.alice.getNewAddress();
     const res1 = await services.sendOrder(aliceAddr, 3.03030303);
     services.unconf('alice', 3.03030303);
-    console.log(res1);
 
     // Wait for broadcast and check
     await services.alice.waitForRPC('gettransaction', [res1.transaction_id]);
@@ -126,7 +123,6 @@ describe('Simple Sends', function () {
     const bobAddr = await services.bob.getNewAddress();
     const res2 = await services.sendOrder(bobAddr, 4.04040404);
     services.unconf('bob', 4.04040404);
-    console.log(res2);
 
     // Wait for broadcast and check
     await services.bob.waitForRPC('gettransaction', [res2.transaction_id]);
@@ -147,7 +143,6 @@ describe('Simple Sends', function () {
     const addr1 = await services.alice.getNewAddress();
     const res1 = await services.sendOrder(addr1, 0.01010101);
     services.unconf('alice', 0.01010101);
-    console.log(res1);
 
     await services.alice.waitForRPC('gettransaction', [res1.transaction_id]);
     await services.check('alice');
@@ -155,7 +150,6 @@ describe('Simple Sends', function () {
     const addr2 = await services.alice.getNewAddress();
     const res2 = await services.sendOrder(addr2, 0.01010101);
     services.unconf('alice', 0.01010101);
-    console.log(res2);
 
     await services.alice.waitForRPC('gettransaction', [res2.transaction_id]);
     await services.check('alice');
@@ -163,7 +157,6 @@ describe('Simple Sends', function () {
     const addr3 = await services.alice.getNewAddress();
     const res3 = await services.sendOrder(addr3, 0.01010101);
     services.unconf('alice', 0.01010101);
-    console.log(res3);
 
     await services.alice.waitForRPC('gettransaction', [res3.transaction_id]);
     await services.check('alice');
@@ -171,7 +164,6 @@ describe('Simple Sends', function () {
     const addr4 = await services.alice.getNewAddress();
     const res4 = await services.sendOrder(addr4, 0.01010101);
     services.unconf('alice', 0.01010101);
-    console.log(res4);
 
     await services.alice.waitForRPC('gettransaction', [res4.transaction_id]);
     await services.check('alice');
@@ -190,28 +182,24 @@ describe('Simple Sends', function () {
     const addr = await services.alice.getNewAddress();
     const res1 = await services.sendOrder(addr, 0.02020202);
     services.unconf('alice', 0.02020202);
-    console.log(res1);
 
     await services.alice.waitForRPC('gettransaction', [res1.transaction_id]);
     await services.check('alice');
 
     const res2 = await services.sendOrder(addr, 0.02020202);
     services.unconf('alice', 0.02020202);
-    console.log(res2);
 
     await services.alice.waitForRPC('gettransaction', [res2.transaction_id]);
     await services.check('alice');
 
     const res3 = await services.sendOrder(addr, 0.02020202);
     services.unconf('alice', 0.02020202);
-    console.log(res3);
 
     await services.alice.waitForRPC('gettransaction', [res3.transaction_id]);
     await services.check('alice');
 
     const res4 = await services.sendOrder(addr, 0.02020202);
     services.unconf('alice', 0.02020202);
-    console.log(res4);
 
     await services.alice.waitForRPC('gettransaction', [res4.transaction_id]);
     await services.check('alice');
@@ -234,7 +222,6 @@ describe('Simple Sends', function () {
     const addr = await services.alice.getNewAddress();
     const res = await services.sendOrder(addr, 0.83838384);
     services.unconf('alice', 0.83838384);
-    console.log(res);
 
     await services.alice.waitForRPC('gettransaction', [res.transaction_id]);
     await services.check('alice');
@@ -254,7 +241,6 @@ describe('Simple Sends', function () {
     const addr1 = await services.bob.getNewAddress();
     const res1 = await services.sendOrder(addr1, 0.90909090);
     services.unconf('bob', 0.90909090);
-    console.log(res1);
 
     await services.bob.waitForRPC('gettransaction', [res1.transaction_id]);
     await services.check('bob');
@@ -271,7 +257,6 @@ describe('Simple Sends', function () {
     const addr2 = await services.bob.getNewAddress();
     const res2 = await services.sendOrder(addr2, 0.03030304);
     services.unconf('bob', 0.03030304);
-    console.log(res2);
 
     await services.bob.waitForRPC('gettransaction', [res2.transaction_id]);
     await services.check('bob');
@@ -287,7 +272,6 @@ describe('Simple Sends', function () {
     const aliceAddr1 = await services.alice.getNewAddress();
     const res1 = await services.sendOrder(aliceAddr1, 0.12345678);
     services.unconf('alice', 0.12345678);
-    console.log(res1);
 
     await services.alice.waitForRPC('gettransaction', [res1.transaction_id]);
     await services.check('alice');
@@ -297,7 +281,6 @@ describe('Simple Sends', function () {
     const bobAddr1 = await services.bob.getNewAddress();
     const res2 = await services.sendOrder(bobAddr1, 0.87654321);
     services.unconf('bob', 0.87654321);
-    console.log(res2);
 
     await services.bob.waitForRPC('gettransaction', [res2.transaction_id]);
     await services.check('alice');
@@ -338,7 +321,6 @@ describe('Simple Sends', function () {
     const aliceAddr2 = await services.alice.getNewAddress();
     const res3 = await services.sendOrder(aliceAddr2, 0.11111111);
     services.unconf('alice', 0.11111111);
-    console.log(res3);
 
     await services.alice.waitForRPC('gettransaction', [res3.transaction_id]);
     await services.check('alice');
@@ -357,7 +339,6 @@ describe('Simple Sends', function () {
     const addr1 = await services.alice.getNewAddress();
     const res1 = await services.sendOrder(addr1, 0.01010101);
     services.unconf('alice', 0.01010101);
-    console.log(res1);
     await services.alice.waitForRPC('gettransaction', [res1.transaction_id]);
 
     // check each payout and make sure orders 1-6
@@ -370,7 +351,6 @@ describe('Simple Sends', function () {
     const addr2 = await services.alice.getNewAddress();
     const res2 = await services.sendOrder(addr2, 0.01010101);
     services.unconf('alice', 0.01010101);
-    console.log(res2);
     await services.alice.waitForRPC('gettransaction', [res2.transaction_id]);
 
     tx = await services.alice.getTransaction(res2.transaction_id);
@@ -380,7 +360,6 @@ describe('Simple Sends', function () {
     const addr3 = await services.alice.getNewAddress();
     const res3 = await services.sendOrder(addr3, 0.01010101);
     services.unconf('alice', 0.01010101);
-    console.log(res3);
     await services.alice.waitForRPC('gettransaction', [res3.transaction_id]);
 
     tx = await services.alice.getTransaction(res3.transaction_id);
@@ -390,7 +369,6 @@ describe('Simple Sends', function () {
     const addr4 = await services.alice.getNewAddress();
     const res4 = await services.sendOrder(addr4, 0.01010101);
     services.unconf('alice', 0.01010101);
-    console.log(res4);
     await services.alice.waitForRPC('gettransaction', [res4.transaction_id]);
 
     tx = await services.alice.getTransaction(res4.transaction_id);
@@ -400,7 +378,6 @@ describe('Simple Sends', function () {
     const addr5 = await services.alice.getNewAddress();
     const res5 = await services.sendOrder(addr5, 0.01010101);
     services.unconf('alice', 0.01010101);
-    console.log(res5);
     await services.alice.waitForRPC('gettransaction', [res5.transaction_id]);
 
     tx = await services.alice.getTransaction(res5.transaction_id);
@@ -410,7 +387,6 @@ describe('Simple Sends', function () {
     const addr6 = await services.alice.getNewAddress();
     const res6 = await services.sendOrder(addr6, 0.01010101);
     services.unconf('alice', 0.01010101);
-    console.log(res6);
     await services.alice.waitForRPC('gettransaction', [res6.transaction_id]);
 
     tx = await services.alice.getTransaction(res6.transaction_id);
@@ -420,7 +396,6 @@ describe('Simple Sends', function () {
     const addr7 = await services.alice.getNewAddress();
     const res7 = await services.sendOrder(addr7, 0.01010101);
     services.unconf('alice', 0.01010101);
-    console.log(res7);
     await services.alice.waitForRPC('gettransaction', [res7.transaction_id]);
 
     // should be sent as sendOne()
@@ -431,7 +406,6 @@ describe('Simple Sends', function () {
     const addr8 = await services.alice.getNewAddress();
     const res8 = await services.sendOrder(addr8, 0.01010101);
     services.unconf('alice', 0.01010101);
-    console.log(res8);
     await services.alice.waitForRPC('gettransaction', [res8.transaction_id]);
 
     // should be batched with previous one-off
