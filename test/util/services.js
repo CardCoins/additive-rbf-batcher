@@ -113,6 +113,8 @@ class Services {
       {stdio: 'pipe', detached: false}
     );
 
+    process.on('SIGINT', this.stopBitcoin);
+
     await this.client.waitForRPC('getblockcount');
 
     try {
@@ -140,8 +142,20 @@ class Services {
   }
 
   printStdout(str) {
+    if (process.env.QUIET) {
+      // Overwrites on one line
+      process.stdout.cursorTo(0);
+      process.stdout.write(
+        str
+        .replace(/(\r\n|\n|\r)/gm, '')
+        .substr(0, process.stdout.columns)
+        .padEnd(process.stdout.columns, ' ')
+      );
+      return;
+    }
+
     // Prints in blue
-    console.log(`\x1b[${34}m%s\x1b[0m`, str);
+    console.log(`\x1b[${34}m%s\x1b[0m`, str.replace(/(\r\n|\n|\r)/gm, ''));
   }
 
   // Update expected balances for audit

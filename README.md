@@ -75,6 +75,10 @@ npm run build
 
 ## Testing
 
+The tests spawn a Bitcoin Core instance with a temporary data directory. It has
+a `sendOrder()` function that mimics that call sent by your application
+to the RBF batcher.
+
 Once installed (in developer mode), the test suite can be run with the command:
 
 ```
@@ -87,28 +91,11 @@ Individual test files can be run (for example):
 npm run test-file test/simple-send-test.js
 ```
 
-The test spawns a Bitcoin Core instance with a temporary data directory. It has
-a `sendOrder()` function that mimics that call sent by your application
-to the RBF batcher.
+By default, Bitcoin Core logs are output (in blue) along with the replacer
+logger output. Bitcoin Core log output can be minimized by prepending any test
+command with the environment variable `QUIET=1`:
 
-The test suite runs (at least) the following scenarios:
-- Alice requests a payout, it's sent and confirmed
-- Bob requests a payout, it's sent and confirmed
-- Alice requests a payout but it is abandoned (dropped from mempool)
-  - Then Bob requests a payout, and it is batched with Alice's payout
-- Alice requests 4 payouts all to different addresses
-  - Each request RBF-batches together the previous payouts
-  - All 4 payouts end up in one single batch transaction and confirmed
-- Alice requests 4 payouts all to the SAME addresses
-  - Each request RBF-batches together the previous payouts
-  - All 4 payouts end up in one single batch transaction and confirmed
-  - The transaction is checked to ensure that it had distinct outputs for each order
-- 6 Blocks go by before Alice requests another payout
-  - This ensures that the outputs.json array is cleared of payouts with >6 confirmations
-- Bob requests a payout, but before it is confirmed the system reboots
-  - This ensures that the Replacer reads the current outputs.json file on boot
-  - Bob requests a second payout and it is RBF-batched together with the first
-- Alice and Bob request payouts but the replaced transaction gets confirmed first
-  - The RBF transaction is treated like it abandoned
-  - When the next payout is requested, the abandoned payout is batched-in
-- Request so many payouts that multiple batches are created into the mempool
+```
+QUIET=1 npm run test
+```
+
