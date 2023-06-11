@@ -16,14 +16,10 @@ describe('Mempool Evict', function () {
 
   const services = new Services({
     network: 'regtest',
-    username: 'multi-batch-test',
+    username: 'mempool-evict-test',
     password: 'password-test',
     wallet: 'app',
     port: 18443,
-    confTarget: 3,
-    estimateMode: 'CONSERVATIVE',
-    maxFeeRate: 0.005,
-    maxFeeConfTarget: 3,
     dataDir: Services.tmpdir()
   });
 

@@ -16,10 +16,7 @@ describe('Multi Batch', function () {
     password: 'password-test',
     wallet: 'app',
     port: 18443,
-    confTarget: 3,
-    estimateMode: 'CONSERVATIVE',
-    maxFeeRate: 0.00050000,
-    maxFeeConfTarget: 3,
+    maxFeeRate: 50, // Small value here to start new batches faster in test
     dataDir: Services.tmpdir()
   });
 
