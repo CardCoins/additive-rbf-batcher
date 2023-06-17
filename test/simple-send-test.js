@@ -17,10 +17,8 @@ describe('Simple Sends', function () {
     password: 'password-test',
     wallet: 'app',
     port: 18443,
-    confTarget: 3,
-    estimateMode: 'CONSERVATIVE',
-    maxFeeRate: 0.00050000,
-    maxFeeConfTarget: 3,
+    fallbackMinFee: 1,
+    maxFeeRate: 5, // Small value here to start new batches faster in test
     dataDir: Services.tmpdir()
   });
 
@@ -334,7 +332,7 @@ describe('Simple Sends', function () {
     await services.check('bob');
   });
 
-  it('absurd fee limit after 6 RBFs', async () => {
+  it('hit max fee limit after 6 RBFs', async () => {
     // Alice makes several orders to different addresses
     const addr1 = await services.alice.getNewAddress();
     const res1 = await services.sendOrder(addr1, 0.01010101);
