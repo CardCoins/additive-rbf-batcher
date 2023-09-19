@@ -4,6 +4,7 @@
 
 'use strict';
 
+const assert = require('assert');
 const Services = require('./util/services');
 
 /**
@@ -61,6 +62,15 @@ describe('Fee Estimator', function () {
 
   before(async () => {
     await services.init();
+
+    // Do not allow this error message in this test
+    services.replacer.logger.info = (s) => {
+      assert(
+        s.indexOf('insufficient fee') === -1,
+        `Insufficient Fee error not allowed: "${s}"`);
+      console.log(s);
+    };
+
     services.replacer.fees.client = client;
     await services.startBitcoin();
   });
