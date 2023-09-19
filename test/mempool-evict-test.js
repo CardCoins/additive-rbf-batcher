@@ -35,7 +35,7 @@ describe('Mempool Evict', function () {
   });
 
   it('should generate coins and fund wallet', async () => {
-    await services.miner.generate(200);
+    await services.miner.generate(120);
 
     await services.miner.execute(
       'sendtoaddress',

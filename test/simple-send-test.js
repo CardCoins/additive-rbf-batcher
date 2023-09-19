@@ -32,7 +32,7 @@ describe('Simple Sends', function () {
   });
 
   it('should generate coins and fund walet', async () => {
-    await services.miner.generate(200);
+    await services.miner.generate(110);
 
     const appAddrs = [];
     for (let i = 0; i < 10; i++) {
@@ -52,7 +52,7 @@ describe('Simple Sends', function () {
       [appAddrs[9]]: 10
     });
 
-    await services.miner.waitForRPC('gettransaction', [txid]);
+    await services.app.waitForRPC('gettransaction', [txid]);
 
     services.unconf('app', 10 * 10);
     await services.check('app');

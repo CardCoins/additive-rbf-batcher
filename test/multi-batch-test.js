@@ -43,7 +43,7 @@ describe('Multi Batch', function () {
     let tx;
 
     it('should generate coins and fund wallet', async () => {
-      await services.miner.generate(200);
+      await services.miner.generate(110);
 
       const fundCoin = 1;
       const txid = await services.miner.sendMany({
@@ -59,7 +59,7 @@ describe('Multi Batch', function () {
         [appAddrs[9]]: fundCoin
       });
 
-      await services.miner.waitForRPC('gettransaction', [txid]);
+      await services.app.waitForRPC('gettransaction', [txid]);
 
       services.unconf('app', 10 * fundCoin);
       await services.check('app');

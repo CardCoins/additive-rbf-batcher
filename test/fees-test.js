@@ -70,7 +70,7 @@ describe('Fee Estimator', function () {
   });
 
   it('should fund app', async () => {
-    await services.miner.generate(200);
+    await services.miner.generate(110);
     await services.miner.execute(
       'sendtoaddress',
       [await services.app.getNewAddress(), 100]);

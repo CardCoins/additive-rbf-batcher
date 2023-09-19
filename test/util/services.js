@@ -91,6 +91,7 @@ class Services {
       '-regtest',
       '-fallbackfee=0.00010000',
       '-persistmempool=0',
+      '-debug=rpc',
       // These will be ignored until created, but required for restarts
       '-wallet=app',
       '-wallet=miner',
