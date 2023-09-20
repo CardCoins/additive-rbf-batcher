@@ -173,4 +173,31 @@ describe('Multi Batch', function () {
       await services.check('app');
     });
   });
+
+  describe('Rule 6', function() {
+    it('should not add to batch with spent output', async () => {
+        const addrBob = await services.bob.getNewAddress();
+        // Bob makes first request
+        const res1 = await services.sendOrder(addrBob, 0.001);
+        await services.bob.waitForRPC('gettransaction', [res1.transaction_id]);
+
+        // Bob spends his unconfirmed output
+        const tx1 = await services.bob.execute(
+          'send',
+          {
+            outputs: [{'bcrt1q4kc7ax3ps66x680xq5pxaqnztjr9p57t7ryhaz': 0.0001}],
+            options: {'include_unsafe': true}
+          }
+        );
+
+        // Bob makes second request
+        const res2 = await services.sendOrder(addrBob, 0.001);
+
+        // We had to start another batch
+        const mempool = await services.app.execute('getrawmempool', []);
+        for (const txid of [res1.transaction_id, res2.transaction_id, tx1.txid]) {
+          assert(mempool.includes(txid));
+        }
+    });
+  });
 });
