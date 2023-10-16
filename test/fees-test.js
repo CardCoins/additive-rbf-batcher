@@ -4,6 +4,7 @@
 
 'use strict';
 
+const assert = require('assert');
 const Services = require('./util/services');
 
 /**
@@ -45,6 +46,15 @@ class MockClient {
   }
 };
 
+// Random address type for each request
+function gnaArgs() {
+  const types = ['legacy', 'p2sh-segwit', 'bech32', 'bech32m'];
+  const type = types[Math.floor(Math.random() * types.length)];
+  const label = '';
+  console.log(type)
+  return [label, type];
+}
+
 describe('Fee Estimator', function () {
   this.timeout(0);
 
@@ -61,6 +71,15 @@ describe('Fee Estimator', function () {
 
   before(async () => {
     await services.init();
+
+    // Do not allow this error message in this test
+    services.replacer.logger.info = (s) => {
+      assert(
+        s.indexOf('insufficient fee') === -1,
+        `Insufficient Fee error not allowed: "${s}"`);
+      console.log(s);
+    };
+
     services.replacer.fees.client = client;
     await services.startBitcoin();
   });
@@ -70,7 +89,7 @@ describe('Fee Estimator', function () {
   });
 
   it('should fund app', async () => {
-    await services.miner.generate(200);
+    await services.miner.generate(110);
     await services.miner.execute(
       'sendtoaddress',
       [await services.app.getNewAddress(), 100]);
@@ -115,6 +134,23 @@ describe('Fee Estimator', function () {
     await services.check('alice');
     await services.miner.generate(1);
     services.conf('alice', 0.1 * 50);
+    await services.check('alice');
+  });
+
+  it('should not violate rule 6', async () => {
+    client.minFee =  0.00050000; // start high
+    client.lowFee =  0.00100000;
+    client.highFee = 0.10000000;
+    client.factor = -10; // drop fee rate quickly
+    for (let i = 0; i < 10; i ++) {
+        const addr1 = await services.alice.getNewAddress();
+        const res1 = await services.sendOrder(addr1, 0.1);
+        services.unconf('alice', 0.1);
+        await services.alice.waitForRPC('gettransaction', [res1.transaction_id]);
+    }
+    await services.check('alice');
+    await services.miner.generate(1);
+    services.conf('alice', 0.1 * 10);
     await services.check('alice');
   });
 });
