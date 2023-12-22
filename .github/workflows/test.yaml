@@ -24,19 +24,19 @@ jobs:
       id: cache
       uses: actions/cache@v3
       with:
-        path: bitcoin-23.0/bin
-        key: bitcoin-23.0
+        path: bitcoin-26.0/bin
+        key: bitcoin-26.0
 
     - name: Download Bitcoin Core
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
-        wget https://bitcoincore.org/bin/bitcoin-core-23.0/bitcoin-23.0-x86_64-linux-gnu.tar.gz
-        tar -xvf bitcoin-23.0-x86_64-linux-gnu.tar.gz
-        ls $PWD/bitcoin-23.0/bin
+        wget https://bitcoincore.org/bin/bitcoin-core-26.0/bitcoin-26.0-x86_64-linux-gnu.tar.gz
+        tar -xvf bitcoin-26.0-x86_64-linux-gnu.tar.gz
+        ls $PWD/bitcoin-26.0/bin
 
     - name: Install Bitcoin Core
       run: |
-        sudo ln -s $PWD/bitcoin-23.0/bin/* /usr/local/bin/
+        sudo ln -s $PWD/bitcoin-26.0/bin/* /usr/local/bin/
 
     - name: Install dependencies
       run: npm install
