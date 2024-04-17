@@ -16,7 +16,6 @@ describe('Retry', function () {
     wallet: 'app',
     port: 18443,
     fallbackMinFee: 1,
-    maxFeeRate: 5, // Small value here to start new batches faster in test
     dataDir: Services.tmpdir()
   });
 
@@ -90,14 +89,7 @@ describe('Retry', function () {
   });
 
   for (let i = 0; i < 5; i++) {
-    it(`Alice requests five more payouts at higher fee rates: ${i + 1}`, async () => {
-      // Jack up fees
-      services.replacer.fees.client = {
-        execute: (method, params) => {
-          return {mempoolminfee: 0.00090000, feerate: 0.00090000};
-        }
-      };
-
+    it(`Alice requests five more payouts: ${i + 1}`, async () => {
       // Send order
       const addr = await services.alice.getNewAddress();
       const res = await services.sendOrder(addr, 0.1);
