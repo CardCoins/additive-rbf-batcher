@@ -27,6 +27,7 @@ class Services {
     this.miner =  new Client({...options, wallet: 'miner'});
     this.alice =  new Client({...options, wallet: 'alice'});
     this.bob =    new Client({...options, wallet: 'bob'});
+    this.chuck =  new Client({...options, wallet: 'chuck'});
 
     // incremented throughout the tests
     this.orderID = 0;
@@ -42,6 +43,10 @@ class Services {
         conf: 0
       },
       bob: {
+        unconf: 0,
+        conf: 0
+      },
+      chuck: {
         unconf: 0,
         conf: 0
       }
@@ -92,11 +97,13 @@ class Services {
       '-fallbackfee=0.00010000',
       '-persistmempool=0',
       '-debug=rpc',
+      '-debug=mempool',
       // These will be ignored until created, but required for restarts
       '-wallet=app',
       '-wallet=miner',
       '-wallet=alice',
-      '-wallet=bob'
+      '-wallet=bob',
+      '-wallet=chuck'
     ];
 
     // optional
@@ -123,6 +130,7 @@ class Services {
       await this.client.execute('createwallet', ['miner']);
       await this.client.execute('createwallet', ['alice']);
       await this.client.execute('createwallet', ['bob']);
+      await this.client.execute('createwallet', ['chuck']);
     } catch (e) {
       // Ignore "database already exists" error
     }
