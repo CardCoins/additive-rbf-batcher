@@ -144,25 +144,50 @@ describe('Reorg', function () {
       (await services.miner.execute('getrawmempool')).sort(),
       [txA.txid, txBC.txid].sort());
 
-    // Re-insert txAB which will appropriately replace txA
+    // Re-insert txAB which will appropriately replace txA.
+    // It will ALSO evict txBC, because it is a child of txA.
+    // Note that this requires that txAB has enough RBF fees to replace both.
     await services.miner.execute('prioritisetransaction', [txAB.txid, 0, 150000000]);
     await services.miner.execute('sendrawtransaction', [txAB.hex]);
 
-    // double payout is now in the mempool
+    // double payout is not in the mempool
     assert.deepStrictEqual(
-      (await services.miner.execute('getrawmempool')).sort(),
-      [txAB.txid, txBC.txid].sort());
+      await services.miner.execute('getrawmempool'),
+      [txAB.txid]);
 
     // Confirm
     await services.miner.generate(1);
 
     // Expected outcome (Alice's payout is already confirmed)
     services.conf('bob', 2.2);
-    services.conf('chuck', 7);
     await services.check('alice');
+    await services.check('bob');
+
+    // Now Chuck has not been paid at all, because an unconfirmed
+    // payment has been replaced in a block, Chuck will need
+    // a brand new transaction now.
+    assert.strictEqual(await services.chuck.getBalance(), 0);
+    assert.strictEqual(await services.chuck.getUnconfirmedBalance(), 0);
+  });
+
+  it('Alice requests a payout, it is batched with Chuck\'s abandoned payout (txAC)', async () => {
+    // Send order
+    const addr = await services.alice.getNewAddress();
+    const res = await services.sendOrder(addr, 0.001);
+    services.unconf('alice', 0.001);
+
+    // Wait for broadcast and check everyone
+    await services.alice.waitForRPC('gettransaction', [res.transaction_id]);
+    await services.check('alice');
+    await services.check('bob');
     await services.check('chuck');
 
-    // Currently expected to fail because Bob has been paid twice
+    // Confirm
+    await services.miner.generate(1);
+    services.conf('chuck', 7);
+    services.conf('alice', 0.001);
+    await services.check('alice');
     await services.check('bob');
+    await services.check('chuck');
   });
 });
