@@ -18,8 +18,8 @@ npm install --omit=dev
 
 ## Usage
 
-The batcher expects a running local instance of Bitcoin Core. RPC details for
-the node and wallet are passed in as options.
+The batcher expects a running local instance of Bitcoin Core v26 or greater.
+RPC details for the node and wallet are passed in as options.
 For more details see [Configuration](#configuration)
 
 Example code with some options set:
@@ -87,6 +87,26 @@ of an RBF batch exceeds EITHER the fee rate provided by `rpc estimatesmartfee` w
 limit set by `maxFeeRate`. In this case, the RBF batch is discarded and the new payout
 request is sent as a single transaction paying only its own fee, thereby also starting
 the next batch for future payouts.
+
+## Replacement Edge Cases
+
+We do not replace batch transactions where one or more outputs have been spent,
+whether it be spent by our own wallet or a customer's wallet. Replacing packages
+of transactions increases complexity and may disrupt customer activity.
+
+If multiple batches are in the mempool, we add new payouts to the batch with the current
+lowest fee rate, assuming it has no spent outputs.
+
+## Handling Abandoned Payouts
+
+It is possible for a replaced transaction (an old version of a batch) to be confirmed
+by miners. This means that some payouts added recently to the batch are evicted
+from the mempool. Those payments are batched together with the *next* payout,
+but they must also be handled with care. In particular, we do not want to
+pay customers twice! This is prevented by spending the output of the confirmed,
+replaced transaction when re-sending the abandoned payouts. If a chain reorganization
+ends up replacing the confirmed transaction with the original payouts, the re-sent
+payouts will be evicted and will no longer be valid.
 
 ## Dependencies
 
